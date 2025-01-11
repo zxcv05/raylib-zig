@@ -3,15 +3,15 @@
     .version = "5.5.0",
     .dependencies = .{
         .raylib = .{
-            .url = "https://github.com/raysan5/raylib/archive/c1ab645ca298a2801097931d1079b10ff7eb9df8.tar.gz",
-            .hash = "1220d93782859726c2c46a05450615b7edfc82b7319daac50cbc7c3345d660b022d7",
+            .url = "https://github.com/raysan5/raylib/archive/62d8969a56909a4721114860cbe1350b5dcb20eb.tar.gz",
+            .hash = "1220a0ab260b5709cd1ceae654b1108949fe93601dd2e8761151ab2e5ede3c67f6b1",
         },
         .raygui = .{
             .url = "https://github.com/raysan5/raygui/archive/1e03efca48c50c5ea4b4a053d5bf04bad58d3e43.tar.gz",
             .hash = "122062b24f031e68f0d11c91dfc32aed5baf06caf26ed3c80ea1802f9e788ef1c358",
         },
     },
-    .minimum_zig_version = "0.13.0",
+    .minimum_zig_version = "0.14.0",
     .paths = .{
         "build.zig",
         "build.zig.zon",
