@@ -1523,7 +1523,7 @@ pub const AudioStream = extern struct {
     sampleSize: c_uint,
     channels: c_uint,
 
-    pub fn load(sampleRate: u32, sampleSize: u32, channels: u32) AudioStream {
+    pub fn init(sampleRate: u32, sampleSize: u32, channels: u32) AudioStream {
         return loadAudioStream(sampleRate, sampleSize, channels);
     }
 
@@ -1536,7 +1536,7 @@ pub const Sound = extern struct {
     stream: AudioStream,
     frameCount: c_uint,
 
-    pub fn load(fileName: [*:0]const u8) Sound {
+    pub fn init(fileName: [*:0]const u8) Sound {
         return loadSound(fileName);
     }
 
@@ -1552,7 +1552,7 @@ pub const Music = extern struct {
     ctxType: c_int,
     ctxData: *anyopaque,
 
-    pub fn load(fileName: [*:0]const u8) Music {
+    pub fn init(fileName: [*:0]const u8) Music {
         return loadMusicStream(fileName);
     }
 
