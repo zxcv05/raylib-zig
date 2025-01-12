@@ -1522,11 +1522,27 @@ pub const AudioStream = extern struct {
     sampleRate: c_uint,
     sampleSize: c_uint,
     channels: c_uint,
+
+    pub fn load(sampleRate: u32, sampleSize: u32, channels: u32) AudioStream {
+        return loadAudioStream(sampleRate, sampleSize, channels);
+    }
+
+    pub fn unload(this: AudioStream) void {
+        unloadAudioStream(this);
+    }
 };
 
 pub const Sound = extern struct {
     stream: AudioStream,
     frameCount: c_uint,
+
+    pub fn load(fileName: [*:0]const u8) Sound {
+        return loadSound(fileName);
+    }
+
+    pub fn unload(this: Sound) void {
+        unloadSound(this);
+    }
 };
 
 pub const Music = extern struct {
@@ -1535,6 +1551,14 @@ pub const Music = extern struct {
     looping: bool,
     ctxType: c_int,
     ctxData: *anyopaque,
+
+    pub fn load(fileName: [*:0]const u8) Music {
+        return loadMusicStream(fileName);
+    }
+
+    pub fn unload(this: Music) void {
+        return unloadMusicStream(this);
+    }
 };
 
 pub const VrDeviceInfo = extern struct {
