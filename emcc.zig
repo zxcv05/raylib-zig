@@ -65,7 +65,7 @@ pub fn compileForEmscripten(
 // TODO: Add a parameter that allows a custom output directory.
 pub fn linkWithEmscripten(
     b: *std.Build,
-    item: *std.Build.Step.Compile,
+    items: []const *std.Build.Step.Compile,
 ) !*std.Build.Step.Run {
     const emccExe = switch (builtin.os.tag) {
         .windows => "emcc.bat",
@@ -93,8 +93,10 @@ pub fn linkWithEmscripten(
     // Actually link everything together.
     const emcc_command = b.addSystemCommand(&[_][]const u8{emcc_run_arg});
 
-    emcc_command.addFileArg(item.getEmittedBin());
-    emcc_command.step.dependOn(&item.step);
+    for (items) |item| {
+        emcc_command.addFileArg(item.getEmittedBin());
+        emcc_command.step.dependOn(&item.step);
+    }
 
     // This puts the file in zig-out/htmlout/index.html.
     emcc_command.step.dependOn(&mkdir_command.step);
@@ -109,8 +111,11 @@ pub fn linkWithEmscripten(
         "--emrun",
     });
 
-    if (item.root_module.optimize == .Debug) {
-        emcc_command.addArg("-sASSERTIONS");
+    for (items) |item| {
+        if (item.root_module.optimize == .Debug) {
+            emcc_command.addArg("-sASSERTIONS");
+            break;
+        }
     }
 
     return emcc_command;
