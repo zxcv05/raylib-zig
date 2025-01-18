@@ -15,17 +15,9 @@ pub fn emscriptenRunStep(b: *std.Build) !*std.Build.Step.Run {
     defer b.allocator.free(emrun_run_arg);
 
     if (b.sysroot == null) {
-        emrun_run_arg = try std.fmt.bufPrint(
-            emrun_run_arg,
-            "{s}",
-            .{ emrunExe }
-        );
+        emrun_run_arg = try std.fmt.bufPrint(emrun_run_arg, "{s}", .{emrunExe});
     } else {
-        emrun_run_arg = try std.fmt.bufPrint(
-            emrun_run_arg,
-            "{s}" ++ std.fs.path.sep_str ++ "{s}",
-            .{ b.sysroot.?, emrunExe }
-        );
+        emrun_run_arg = try std.fmt.bufPrint(emrun_run_arg, "{s}" ++ std.fs.path.sep_str ++ "{s}", .{ b.sysroot.?, emrunExe });
     }
 
     const run_cmd = b.addSystemCommand(&[_][]const u8{ emrun_run_arg, emccOutputDir ++ emccOutputFile });
@@ -73,7 +65,7 @@ pub fn compileForEmscripten(
 // TODO: Add a parameter that allows a custom output directory.
 pub fn linkWithEmscripten(
     b: *std.Build,
-    itemsToLink: []const *std.Build.Step.Compile,
+    item: *std.Build.Step.Compile,
 ) !*std.Build.Step.Run {
     const emccExe = switch (builtin.os.tag) {
         .windows => "emcc.bat",
@@ -83,11 +75,7 @@ pub fn linkWithEmscripten(
     defer b.allocator.free(emcc_run_arg);
 
     if (b.sysroot == null) {
-        emcc_run_arg = try std.fmt.bufPrint(
-            emcc_run_arg,
-            "{s}",
-            .{ emccExe }
-        );
+        emcc_run_arg = try std.fmt.bufPrint(emcc_run_arg, "{s}", .{emccExe});
     } else {
         emcc_run_arg = try std.fmt.bufPrint(
             emcc_run_arg,
@@ -105,10 +93,9 @@ pub fn linkWithEmscripten(
     // Actually link everything together.
     const emcc_command = b.addSystemCommand(&[_][]const u8{emcc_run_arg});
 
-    for (itemsToLink) |item| {
-        emcc_command.addFileArg(item.getEmittedBin());
-        emcc_command.step.dependOn(&item.step);
-    }
+    emcc_command.addFileArg(item.getEmittedBin());
+    emcc_command.step.dependOn(&item.step);
+
     // This puts the file in zig-out/htmlout/index.html.
     emcc_command.step.dependOn(&mkdir_command.step);
     emcc_command.addArgs(&[_][]const u8{
@@ -121,6 +108,11 @@ pub fn linkWithEmscripten(
         "-O3",
         "--emrun",
     });
+
+    if (item.root_module.optimize == .Debug) {
+        emcc_command.addArg("-sASSERTIONS");
+    }
+
     return emcc_command;
 }
 
