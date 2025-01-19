@@ -1543,6 +1543,14 @@ pub const Sound = extern struct {
     pub fn unload(this: Sound) void {
         unloadSound(this);
     }
+
+    pub fn play(this: Sound) void {
+        playSound(this);
+    }
+
+    pub fn stop(this: Sound) void {
+        stopSound(this);
+    }
 };
 
 pub const Music = extern struct {
